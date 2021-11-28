@@ -1,6 +1,5 @@
 const express = require('express');
 const sqlite3 = require('sqlite3');
-const timesheetsRouter = require('./timesheetsRouter.js');
 
 // check if process.env.TEST_DATABASE has been set, and if so load that database instead.
 // This allows the CCmy testing suite to check the routes without corrupting the app's database.
@@ -8,6 +7,9 @@ const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite'
 // const db = new sqlite3.Database(process.env.TEST_DATABASE);
 
 const employeesRouter = express.Router();
+const timesheetsRouter = require('./timesheetsRouter.js');
+
+employeesRouter.use('/:employeeId/timesheets', timesheetsRouter);
 
 employeesRouter.param('employeeId', (req, res, next, empID) => {
     db.get(`
@@ -26,8 +28,6 @@ employeesRouter.param('employeeId', (req, res, next, empID) => {
             }
     });
 });
-
-employeesRouter.use('/:employeeId/timesheets', timesheetsRouter);
 
 employeesRouter.get('/', (req, res, next) => {
     db.all(`

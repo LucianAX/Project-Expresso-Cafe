@@ -6,6 +6,9 @@ const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite');
 
 const menusRouter = express.Router();
+const menuItemsRouter = require('./menuItemsRouter.js');
+
+menusRouter.use('/:menuId/menu-items', menuItemsRouter);
 
 //checks if a menu with the supplied menu ID exists
 menusRouter.param('menuId', (req, res, next, menuId) => {
